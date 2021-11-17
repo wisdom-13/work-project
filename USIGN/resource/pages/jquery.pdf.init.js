@@ -1,7 +1,7 @@
 // pdf.js
 //var url = $("[name=filePath]").val();
 
-var url = 'https://www.ucert.co.kr/sample.pdf';
+var url = 'https://wisdom-13.github.io/work-project/USIGN/sample.pdf';
 var pw = $("[name=decryptPwd]").val();
 
 
