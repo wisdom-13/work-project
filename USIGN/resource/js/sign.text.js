@@ -1,5 +1,5 @@
 // 텍스트 추가
-function add_text()
+function text_add()
 {
     var now_page = $("[name=now_page]").val();
  
@@ -19,7 +19,7 @@ function add_text()
     html += "<textarea class='form-control text_text' name='text_0' rows='1' placeholder='텍스트를 입력해주세요.' onkeyup='text_option()'></textarea>";
  
     html += "<select class='form-control mt-1 text_font' name='font_0' onchange='text_option()'>";
-    ···
+	html += "<option value='NanumGothic'>나눔고딕</option>";
     html += "</select>";
  
     html += "<div class='form-inline mt-1'>";
