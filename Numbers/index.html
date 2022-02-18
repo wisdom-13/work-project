@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Numbers</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css"/>
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.12.4.min.js"></script>
+  <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+
+</head>
+<body>
+  <div class="container">
+    <div class="title">
+      <h1 style="margin: 0;">Numbers</h1>
+    
+      <div class="area">
+        <div class="row">
+          <div class="block"></div>
+          <div class="block"></div>
+          <div class="block"></div>
+          <div class="block"></div>
+          <div class="block"></div>
+        </div>
+        <div class="row">
+          <div class="block"></div>
+          <div class="block"></div>
+          <div class="block"></div>
+          <div class="block"></div>
+          <div class="block"></div>
+        </div>
+        <div class="row">
+          <div class="block"></div>
+          <div class="block"></div>
+          <div class="block"></div>
+          <div class="block"></div>
+          <div class="block"></div>
+        </div>
+        <div class="row">
+          <div class="block"></div>
+          <div class="block"></div>
+          <div class="block"></div>
+          <div class="block"></div>
+          <div class="block"></div>
+        </div>
+        <div class="row">
+          <div class="block"></div>
+          <div class="block"></div>
+          <div class="block"></div>
+          <div class="block"></div>
+          <div class="block"></div>
+        </div>
+        <div class="row">
+          <div class="block"></div>
+          <div class="block"></div>
+          <div class="block"></div>
+          <div class="block"></div>
+          <div class="block"></div>
+        </div>
+        
+      </div>
+      <div class="panel">
+        <button onclick="numberClick(this)" value="1">1</button>
+        <button onclick="numberClick(this)" value="2">2</button>
+        <button onclick="numberClick(this)" value="3">3</button>
+        <button onclick="numberClick(this)" value="4">4</button>
+        <button onclick="numberClick(this)" value="5">5</button>
+        <br>
+        <button onclick="numberClick(this)" value="6">6</button>
+        <button onclick="numberClick(this)" value="7">7</button>
+        <button onclick="numberClick(this)" value="8">8</button>
+        <button onclick="numberClick(this)" value="9">9</button>
+        <button onclick="numberClick(this)" value="0">0</button>
+        <br>
+        <button style="width: 130px;" onclick="deleteNum(this)" value="X">지우기</button>
+        <button style="width: 200px;" onclick="checkNum(this)" value="O">확인</button>
+      </div>
+    </div>
+  </div>
+</body>
+
+<style>
+  @font-face {
+    font-family: 'Cafe24Ssurround';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2105_2@1.0/Cafe24Ssurround.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+  }
+
+  * {
+    box-sizing: border-box;
+    font-family: Cafe24Ssurround;
+  }
+
+
+  .fill {
+    border: 3px solid #000 !important;
+  }
+
+  .successNum {
+    border: none !important;
+    background-color: #22C55E !important;
+    color: white;
+  }
+
+  .warningNum {
+    border: none !important;
+    background-color: #EAB308 !important;
+    color: white;
+  }
+
+  .wrongNum {
+    border: none !important;
+    background-color: #94A3B8 !important;
+    color: white;
+  }
+
+  .container { 
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border: 1px solid #ccc;  
+    border-radius: 10px;
+    padding: 1.5rem;
+  }
+  
+
+  .panel { margin-top: 20px;}
+
+  .panel button {
+    border: none;
+    background: #EAEEF2;
+    width: 60px;
+    height: 40px;
+    margin: 5px 3px;
+    font-size: 16px;
+    border-radius: 5px;
+  }
+
+  .area { margin-top: 20px;}
+
+  .area .row {
+    display: flex;
+  }
+
+  .area .row div {
+    display: flex !important;
+    border: 2px solid #EAEEF2;
+    width: 60px;
+    height: 60px;
+    margin: 5px;
+    font-size: 16px;
+    border-radius: 5px;
+    display: inline-block;
+    align-items: center;
+    justify-content: center;
+  }
+
+</style>
+
+<script>
+
+  const rand_0_99999 = Math.floor(Math.random() * 99999);
+  const successNumber = ('00000' + rand_0_99999).slice(-5);
+
+  console.log(successNumber)
+
+  function numberClick(obj)
+  {
+    let num = obj.value;
+    let block = getBlock();
+    block.text(num);
+    block.addClass("fill");
+  }
+
+  function deleteNum()
+  {
+    let block = $(".row:not(.complete):first").children(".block.fill:last");
+    block.removeClass("fill");
+    block.text("");
+  }
+
+  function getRow()
+  {
+    let row = $(".row:not(.complete):first");
+    return row;
+  }
+
+  function checkNum()
+  {
+    let rowBlock = getRow().children("div.fill");
+  
+    if (rowBlock.length < 5) {
+      alert("숫자가 부족합니다.");
+      return false;
+    }
+    
+    let count = 0;
+
+    rowBlock.each(function(index){
+      let successNum = successNumber.charAt(index)
+      let inputNum = $(this).text();
+
+      if (successNum == inputNum) {
+        $(this).addClass("successNum");
+        $(`.panel button[value=${inputNum}]`).addClass("successNum");
+        count++;
+
+      } else if (successNumber.indexOf(inputNum) != -1) {
+        $(this).addClass("warningNum");
+        $(`.panel button[value=${inputNum}]`).addClass("warningNum");
+      
+      } else {
+        $(this).addClass("wrongNum");
+        $(`.panel button[value=${inputNum}]`).addClass("wrongNum");
+      }
+    });
+
+    getRow().addClass("complete");
+
+    // 정답
+    if (count == 5) {
+      setTimeout(function() {
+        alert("정답입니다!");
+        location.reload();
+      }, 500);
+    }
+
+    // 실패 
+    if ($(".row.complete").length >= 6) {
+      alert(`실패... 정답은 [${successNumber}] 입니다.`);
+    }
+  }
+
+
+  function getBlock()
+  {
+    let block = $(".row:not(.complete):first").children(".block:not(.fill):first");
+    return block;
+  }
+</script>
+
+</html>
