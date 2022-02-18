@@ -16,6 +16,7 @@
   <div class="container">
     <div class="title">
       <h1 style="margin: 0;">Numbers</h1>
+      <textarea class="textarea">copy</textarea>
     
       <div class="area">
         <div class="row">
@@ -80,6 +81,16 @@
       </div>
     </div>
   </div>
+
+  <div class="modal">
+    <h1></h1>
+    <p></p>
+    <div class="button">
+      <button class="close" onclick="closeModal()">닫기</button>
+    </div>
+  </div>
+  <div class="back"></div>
+  
 </body>
 
 <style>
@@ -93,6 +104,42 @@
   * {
     box-sizing: border-box;
     font-family: Cafe24Ssurround;
+  }
+
+  .back { 
+    display: none;
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.7);
+    z-index: 1000;
+  }
+
+  .modal {
+    display: none;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: #fff;
+    border-radius: 10px;
+    padding: 1.5rem;
+    z-index: 10000;
+    min-width: 250px;
+  }
+
+  .modal .close {
+    border: none;
+    background: #EAEEF2;
+    width: 100px;
+    height: 40px;
+    margin: 5px 3px;
+    font-size: 16px;
+    border-radius: 5px;
   }
 
 
@@ -160,19 +207,40 @@
     justify-content: center;
   }
 
+  .copy {
+    border: none;
+    width: 100px;
+    height: 40px;
+    margin: 5px 3px;
+    font-size: 16px;
+    border-radius: 5px;
+    background-color: #94A3B8 !important;
+    color: white !important;
+  }
+
+  .copyOk {
+    background-color: #1761FD !important;
+    color: white !important;
+  }
+
+  .textarea {
+    position: absolute;
+    top: -200px;
+    left: -200px;
+  }
 </style>
 
 <script>
-
   const rand_0_99999 = Math.floor(Math.random() * 99999);
   const successNumber = ('00000' + rand_0_99999).slice(-5);
+  let emoticon = "";
 
   console.log(successNumber)
 
   function numberClick(obj)
   {
     let num = obj.value;
-    let block = getBlock();
+    let block = $(".row:not(.complete):first").children(".block:not(.fill):first");
     block.text(num);
     block.addClass("fill");
   }
@@ -200,7 +268,7 @@
     }
     
     let count = 0;
-
+    
     rowBlock.each(function(index){
       let successNum = successNumber.charAt(index)
       let inputNum = $(this).text();
@@ -209,39 +277,73 @@
         $(this).addClass("successNum");
         $(`.panel button[value=${inputNum}]`).addClass("successNum");
         count++;
+        emoticon += "🟩";
 
       } else if (successNumber.indexOf(inputNum) != -1) {
         $(this).addClass("warningNum");
         $(`.panel button[value=${inputNum}]`).addClass("warningNum");
+        emoticon += "🟨";
       
       } else {
         $(this).addClass("wrongNum");
         $(`.panel button[value=${inputNum}]`).addClass("wrongNum");
+        emoticon += "⬜";
       }
     });
 
+    emoticon += "<br>";
+
     getRow().addClass("complete");
+
+    let rowCoun = $(".row.complete").length;
 
     // 정답
     if (count == 5) {
       setTimeout(function() {
-        alert("정답입니다!");
-        location.reload();
+        
+        openModal("정답입니다!", `${rowCoun}/6`, 
+          `<button class="copy" onclick="copyText('${rowCoun}', '${emoticon}')">복사하기</button>
+          <button class="close" onclick="location.reload()">다시하기</button>`
+        );
+        // location.reload();
       }, 500);
     }
 
     // 실패 
-    if ($(".row.complete").length >= 6) {
-      alert(`실패... 정답은 [${successNumber}] 입니다.`);
+    if (rowCoun >= 6) {
+      openModal(`실패...`, `정답은 [${successNumber}] 입니다.`, `<button class="close" onclick="location.reload()">다시하기</button>`);
     }
   }
 
 
-  function getBlock()
+  function openModal(title, content, button)
   {
-    let block = $(".row:not(.complete):first").children(".block:not(.fill):first");
-    return block;
+    $(".modal h1").text(title);
+    $(".modal p").html(content);
+    if (button) {
+      $(".modal .button").html(button);
+    }
+    
+    $(".modal, .back").show();
   }
+
+  function closeModal()
+  {
+    $(".modal, .back").hide();
+  }
+
+  function copyText(rowCoun, emoticon)
+  {
+    emoticon = emoticon.replace(/<br>/gi, '\r\n')
+    $(".textarea").val(`Numbers ${rowCoun}/6 \r\n${emoticon}`);
+    
+    $(".textarea").select();//선택
+    document.execCommand("Copy");//복사
+
+    $(".button .copy").addClass("copyOk");
+    $(".button .copy").text("완료!");
+  }
+
 </script>
 
 </html>
